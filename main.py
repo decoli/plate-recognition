@@ -284,8 +284,9 @@ def main(args, tool):
                     plate,
                     lang="eng",
                     builder=pyocr.builders.WordBoxBuilder(tesseract_layout=6))
-    
-                plate_dict[each_plate_section] = res[0].content
+
+                if not len(res) == 0:
+                    plate_dict[each_plate_section] = res[0].content
             print(plate_dict)
             print('recognition compleate.')
  

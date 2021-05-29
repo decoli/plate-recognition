@@ -131,3 +131,4 @@ info/*
 output/*
 samples/*
 .vscode/*
+debug_*.py

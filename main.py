@@ -44,6 +44,7 @@ def cv2pil(image):
 
 @app.route('/', methods=['POST'])
 def main(args=None, tool=None):
+    flag_write = args.write_image or app.config.get('write_image')
     
     if args:
         ori_img = cv2.imread(args.sample_path)
@@ -53,23 +54,28 @@ def main(args=None, tool=None):
         ori_img = cv2.imread(path_received_socket)
 
     img = cv2.cvtColor(ori_img,cv2.COLOR_BGR2GRAY)
-    cv2.imwrite('output/intermediate_image.png', img)
+    if flag_write:
+        cv2.imwrite('output/intermediate_image.png', img)
 
     ret, img = cv2.threshold(img,75,255,0)
-    cv2.imwrite('output/intermediate_image.png', img)
+    if flag_write:
+        cv2.imwrite('output/intermediate_image.png', img)
 
     img = cv2.bitwise_not(img)
-    cv2.imwrite('output/intermediate_image.png', img)
+    if flag_write:
+        cv2.imwrite('output/intermediate_image.png', img)
 
     # 白色区域变大
     kernel_dilate = np.ones((5,5),np.uint8)
     img = cv2.dilate(img,kernel_dilate,iterations = 3)
-    cv2.imwrite('output/intermediate_image.png', img)
+    if flag_write:
+        cv2.imwrite('output/intermediate_image.png', img)
 
     # 白色区域变小
     kernel_erode = np.ones((5,5),np.uint8)
     img = cv2.erode(img,kernel_erode,iterations = 3)
-    cv2.imwrite('output/intermediate_image.png', img)
+    if flag_write:
+        cv2.imwrite('output/intermediate_image.png', img)
 
     # 找到轮廓
     image, contours, hierarchy = cv2.findContours(img,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
@@ -79,7 +85,8 @@ def main(args=None, tool=None):
 
     for cnt in contours:
         img = cv2.drawContours(ori_img, cnt, -1, (0,255,0), 9)
-        cv2.imwrite('output/square_detector.png', img)
+        if flag_write:
+            cv2.imwrite('output/square_detector.png', img)
 
         # img = cv2.drawContours(img, contours, -1, (0,255,0), 3)
         # cv2.imwrite('output/square_detector.png', img)
@@ -88,7 +95,8 @@ def main(args=None, tool=None):
         epsilon = 0.08*cv2.arcLength(cnt,True)
         approx = cv2.approxPolyDP(cnt,epsilon,True)
         img = cv2.drawContours(img, approx, -1, (0,0,255), 15)
-        cv2.imwrite('output/square_detector.png', img)
+        if flag_write:
+            cv2.imwrite('output/square_detector.png', img)
 
         if approx.shape[0] == 4:
             # cv2.warpPerspective
@@ -134,11 +142,13 @@ def main(args=None, tool=None):
             h_plate = plate.shape[0]
             w_plate = plate.shape[1]
             perspective_dst_path = 'output/perspective_dst.png'
-            cv2.imwrite(perspective_dst_path, plate)         
+            if flag_write:
+                cv2.imwrite(perspective_dst_path, plate)         
             plate = cv2.resize(plate, (design_w_plate * resize_time, design_h_plate *resize_time))
 
-            cv2.imwrite(perspective_dst_path, plate)         
-            print('perspective dst:\n{}'.format(perspective_dst_path))
+            if flag_write:
+                cv2.imwrite(perspective_dst_path, plate)         
+                print('perspective dst:\n{}'.format(perspective_dst_path))
             
             # 牌照切割
             plate_section = Plate()
@@ -164,7 +174,8 @@ def main(args=None, tool=None):
             BRAND_y_up = 5
             BRAND_y_down = 40
             plate_section.BRAND = plate[BRAND_y_up: BRAND_y_down, BRAND_x_left: BRAND_x_right]
-            cv2.imwrite(os.path.join(output_dir, 'brand.png'), plate_section.BRAND)
+            if flag_write:
+                cv2.imwrite(os.path.join(output_dir, 'brand.png'), plate_section.BRAND)
 
             # COUNTRY
             # COUNTRY_x_left = int(66.5 / design_w_plate * w_plate + 0.5 - float_range_x)
@@ -176,7 +187,8 @@ def main(args=None, tool=None):
             COUNTRY_y_up = 1
             COUNTRY_y_down = 35
             plate_section.COUNTRY = plate[COUNTRY_y_up: COUNTRY_y_down, COUNTRY_x_left: COUNTRY_x_right]
-            cv2.imwrite(os.path.join(output_dir, 'country.png'), plate_section.COUNTRY)
+            if flag_write:
+                cv2.imwrite(os.path.join(output_dir, 'country.png'), plate_section.COUNTRY)
 
             # TYPE
             # TYPE_x_left = int(20.5 / design_w_plate * w_plate + 0.5 - float_range_x)
@@ -188,7 +200,8 @@ def main(args=None, tool=None):
             TYPE_y_up = 30
             TYPE_y_down = 70
             plate_section.TYPE = plate[TYPE_y_up: TYPE_y_down, TYPE_x_left: TYPE_x_right]
-            cv2.imwrite(os.path.join(output_dir, 'type.png'), plate_section.TYPE)
+            if flag_write:
+                cv2.imwrite(os.path.join(output_dir, 'type.png'), plate_section.TYPE)
 
             # NUMBER
             # NUMBER_x_left = int(20.5 / design_w_plate * w_plate + 0.5 - float_range_x)
@@ -200,7 +213,8 @@ def main(args=None, tool=None):
             NUMBER_y_up = 60
             NUMBER_y_down = 100
             plate_section.NUMBER = plate[NUMBER_y_up: NUMBER_y_down, NUMBER_x_left: NUMBER_x_right]
-            cv2.imwrite(os.path.join(output_dir, 'number.png'), plate_section.NUMBER)
+            if flag_write:
+                cv2.imwrite(os.path.join(output_dir, 'number.png'), plate_section.NUMBER)
 
             # ENGINE MODEL
             ENGINE_x_left = 100
@@ -208,7 +222,8 @@ def main(args=None, tool=None):
             ENGINE_y_up = 90
             ENGINE_y_down = 130
             plate_section.ENGINE = plate[ENGINE_y_up: ENGINE_y_down, ENGINE_x_left: ENGINE_x_right]
-            cv2.imwrite(os.path.join(output_dir, 'engine.png'), plate_section.ENGINE)
+            if flag_write:
+                cv2.imwrite(os.path.join(output_dir, 'engine.png'), plate_section.ENGINE)
 
             # POWER
             POWER_x_left = 160
@@ -216,7 +231,8 @@ def main(args=None, tool=None):
             POWER_y_up = 120
             POWER_y_down = 160
             plate_section.POWER = plate[POWER_y_up: POWER_y_down, POWER_x_left: POWER_x_right]
-            cv2.imwrite(os.path.join(output_dir, 'power.png'), plate_section.POWER)
+            if flag_write:
+                cv2.imwrite(os.path.join(output_dir, 'power.png'), plate_section.POWER)
 
             # GVM
             GVM_x_left = 150
@@ -224,7 +240,8 @@ def main(args=None, tool=None):
             GVM_y_up = 150
             GVM_y_down = 190
             plate_section.GVM = plate[GVM_y_up: GVM_y_down, GVM_x_left: GVM_x_right]
-            cv2.imwrite(os.path.join(output_dir, 'gvm.png'), plate_section.GVM)
+            if flag_write:
+                cv2.imwrite(os.path.join(output_dir, 'gvm.png'), plate_section.GVM)
 
             # ENGINE SIZE
             SIZE_x_left = 390
@@ -232,7 +249,8 @@ def main(args=None, tool=None):
             SIZE_y_up = 90
             SIZE_y_down = 130
             plate_section.SIZE = plate[SIZE_y_up: SIZE_y_down, SIZE_x_left: SIZE_x_right]
-            cv2.imwrite(os.path.join(output_dir, 'size.png'), plate_section.SIZE)
+            if flag_write:
+                cv2.imwrite(os.path.join(output_dir, 'size.png'), plate_section.SIZE)
 
             # DATEy
             DATEy_x_left = 325
@@ -240,7 +258,8 @@ def main(args=None, tool=None):
             DATEy_y_up = 120
             DATEy_y_down = 160
             plate_section.DATEy = plate[DATEy_y_up: DATEy_y_down, DATEy_x_left: DATEy_x_right]
-            cv2.imwrite(os.path.join(output_dir, 'datey.png'), plate_section.DATEy)
+            if flag_write:
+                cv2.imwrite(os.path.join(output_dir, 'datey.png'), plate_section.DATEy)
 
             # DATEm
             DATEm_x_left = 430
@@ -248,7 +267,8 @@ def main(args=None, tool=None):
             DATEm_y_up = 120
             DATEm_y_down = 160
             plate_section.DATEm = plate[DATEm_y_up: DATEm_y_down, DATEm_x_left: DATEm_x_right]
-            cv2.imwrite(os.path.join(output_dir, 'datem.png'), plate_section.DATEm)
+            if flag_write:
+                cv2.imwrite(os.path.join(output_dir, 'datem.png'), plate_section.DATEm)
 
             # OCCUPANTS
             OCCUPANTS_x_left = 370
@@ -256,7 +276,8 @@ def main(args=None, tool=None):
             OCCUPANTS_y_up = 150
             OCCUPANTS_y_down = 190
             plate_section.OCCUPANTS = plate[OCCUPANTS_y_up: OCCUPANTS_y_down, OCCUPANTS_x_left: OCCUPANTS_x_right]
-            cv2.imwrite(os.path.join(output_dir, 'occupants.png'), plate_section.OCCUPANTS)
+            if flag_write:
+                cv2.imwrite(os.path.join(output_dir, 'occupants.png'), plate_section.OCCUPANTS)
 
             # MANUFACTURER
             MANUFACTURER_x_left = 110
@@ -264,7 +285,8 @@ def main(args=None, tool=None):
             MANUFACTURER_y_up = 210
             MANUFACTURER_y_down = 250
             plate_section.MANUFACTURER = plate[MANUFACTURER_y_up: MANUFACTURER_y_down, MANUFACTURER_x_left: MANUFACTURER_x_right]
-            cv2.imwrite(os.path.join(output_dir, 'manufacturer.png'), plate_section.MANUFACTURER)
+            if flag_write:
+                cv2.imwrite(os.path.join(output_dir, 'manufacturer.png'), plate_section.MANUFACTURER)
 
             # MANUFACTURERn1
             MANUFACTURERn1_x_left = 100
@@ -272,7 +294,8 @@ def main(args=None, tool=None):
             MANUFACTURERn1_y_up = 240
             MANUFACTURERn1_y_down = 280
             plate_section.MANUFACTURERn1 = plate[MANUFACTURERn1_y_up: MANUFACTURERn1_y_down, MANUFACTURERn1_x_left: MANUFACTURERn1_x_right]
-            cv2.imwrite(os.path.join(output_dir, 'manufacturer_n1.png'), plate_section.MANUFACTURERn1)
+            if flag_write:
+                cv2.imwrite(os.path.join(output_dir, 'manufacturer_n1.png'), plate_section.MANUFACTURERn1)
 
             # MANUFACTURERn2
             MANUFACTURERn2_x_left = 100
@@ -280,7 +303,8 @@ def main(args=None, tool=None):
             MANUFACTURERn2_y_up = 270
             MANUFACTURERn2_y_down = 310
             plate_section.MANUFACTURERn2 = plate[MANUFACTURERn2_y_up: MANUFACTURERn2_y_down, MANUFACTURERn2_x_left: MANUFACTURERn2_x_right]
-            cv2.imwrite(os.path.join(output_dir, 'manufacturer_n2.png'), plate_section.MANUFACTURERn2)
+            if flag_write:
+                cv2.imwrite(os.path.join(output_dir, 'manufacturer_n2.png'), plate_section.MANUFACTURERn2)
             
             # 文字识别模块
             for each_plate_section in plate_section.__dict__.keys():
@@ -297,8 +321,7 @@ def main(args=None, tool=None):
 
                 if not len(res) == 0:
                     plate_dict[each_plate_section] = res[0].content
-            print(plate_dict)
-            print('recognition compleate.')
+            print('----------\nrecognition compleate, result:\n{}'.format(plate_dict))
  
             # 得到识别成功的flag，便退出循环。
             # if flag_ok:
@@ -325,7 +348,7 @@ if __name__ == '__main__':
     parser.add_argument('-F', '--offline', action='store_true', default=False)
     parser.add_argument('-H', '--host', default='172.18.126.84', type=str)
     parser.add_argument('-P', '--port', default=5000, type=int)
-    parser.add_argument('-D', '--debug', action='store_true', default=False)
+    parser.add_argument('-D', '--debug_flask', action='store_true', default=False)
     parser.add_argument('-W', '--write_image', action='store_true', default=False)
     args = parser.parse_args()
 
@@ -334,4 +357,5 @@ if __name__ == '__main__':
 
     else:
         app.config['tool'] = tool
+        app.config['write_image'] = args.write_image
         app.run(host=args.host, port=args.port, debug=args.debug)

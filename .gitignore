@@ -132,3 +132,5 @@ output/*
 samples/*
 .vscode/*
 debug
+socket_recieved/
+.DS_Store

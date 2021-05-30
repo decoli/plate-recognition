@@ -45,7 +45,10 @@ def cv2pil(image):
 
 @app.route('/', methods=['POST'])
 def main(args=None, tool=None):
-    flag_write = args.write_image or app.config.get('write_image')
+    if not args:
+        flag_write = args.write_image
+    else:
+        flag_write = app.config.get('write_image')
     
     if args:
         ori_img = cv2.imread(args.sample_path)

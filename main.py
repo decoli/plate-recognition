@@ -4,12 +4,15 @@ import sys
 
 import cv2
 import numpy as np
+import pyocr
+import pyocr.builders
+from flask import Flask, request
 from numpy.compat import py3k
 from numpy.core.fromnumeric import sort
 from numpy.testing._private.utils import print_assert_equal
-import pyocr
-import pyocr.builders
 from PIL import Image
+
+app = Flask(__name__)
 
 class Plate:
     def __init__(self):
@@ -39,9 +42,16 @@ def cv2pil(image):
     new_image = Image.fromarray(new_image)
     return new_image
 
-def main(args, tool):
+@app.route('/', methods=['POST'])
+def main(args=None, tool=None):
     
-    ori_img = cv2.imread(args.sample_path)
+    if args:
+        ori_img = cv2.imread(args.sample_path)
+    else: #Flask
+        path_received_socket = 'received_socket/temp.png'
+        request.files.get('file').save(path_received_socket)
+        ori_img = cv2.imread(path_received_socket)
+
     img = cv2.cvtColor(ori_img,cv2.COLOR_BGR2GRAY)
     cv2.imwrite('output/intermediate_image.png', img)
 
@@ -293,6 +303,15 @@ def main(args, tool):
             # 得到识别成功的flag，便退出循环。
             # if flag_ok:
             #     break
+            if not args:
+                return 
+
+@app.after_request
+def cors(environ):
+    environ.headers['Access-Control-Allow-Origin']='*'
+    environ.headers['Access-Control-Allow-Method']='*'
+    environ.headers['Access-Control-Allow-Headers']='x-requested-with,content-type,text.html'
+    return environ
 
 if __name__ == '__main__':
     tools = pyocr.get_available_tools()
@@ -303,6 +322,16 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-S', '--sample_path')
+    parser.add_argument('-F', '--offline', action='store_true', default=False)
+    parser.add_argument('-H', '--host', default='172.18.126.84', type=str)
+    parser.add_argument('-P', '--port', default=5000, type=int)
+    parser.add_argument('-D', '--debug', action='store_true', default=False)
+    parser.add_argument('-W', '--write_image', action='store_true', default=False)
     args = parser.parse_args()
 
-    main(args, tool)
+    if args.offline:
+        main(args, tool)
+
+    else:
+        app.config['tool'] = tool
+        app.run(host=args.host, port=args.port, debug=args.debug)

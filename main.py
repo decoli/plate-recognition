@@ -45,17 +45,14 @@ def cv2pil(image):
 
 @app.route('/', methods=['POST'])
 def main(args=None, tool=None):
-    if not args:
-        flag_write = args.write_image
-    else:
-        flag_write = app.config.get('write_image')
-    
     if args:
         ori_img = cv2.imread(args.sample_path)
+        flag_write = args.write_image
     else: #Flask
         path_received_socket = 'received_socket/temp.png'
         request.files.get('file').save(path_received_socket)
         ori_img = cv2.imread(path_received_socket)
+        flag_write = app.config.get('write_image')
 
     img = cv2.cvtColor(ori_img,cv2.COLOR_BGR2GRAY)
     if flag_write:

@@ -1,5 +1,6 @@
 import argparse
 import os
+import socket
 import sys
 
 import cv2
@@ -343,10 +344,13 @@ if __name__ == '__main__':
         sys.exit(1)
     tool = tools[0]
 
+    host_name = socket.gethostname()
+    ip_add = socket.gethostbyname(host_name)
+
     parser = argparse.ArgumentParser()
     parser.add_argument('-S', '--sample_path')
     parser.add_argument('-F', '--offline', action='store_true', default=False)
-    parser.add_argument('-H', '--host', default='172.18.126.84', type=str)
+    parser.add_argument('-H', '--host', default=ip_add, type=str)
     parser.add_argument('-P', '--port', default=5000, type=int)
     parser.add_argument('-D', '--debug_flask', action='store_true', default=False)
     parser.add_argument('-W', '--write_image', action='store_true', default=False)

@@ -110,22 +110,17 @@ def main(args=None, tool=None):
 
             for each_approx in list(approx):
                 if (each_approx < p_center)[0] and (each_approx < p_center)[1]:
-                    p1 = each_approx
+                    p1 = each_approx #左上
                     continue
                 elif not (each_approx < p_center)[0] and not (each_approx < p_center)[1]:
-                    p4 = each_approx
+                    p4 = each_approx #右下
                     continue
                 elif (each_approx < p_center)[0] and not (each_approx < p_center)[1]:
-                    p3 = each_approx
+                    p3 = each_approx #左下
                     continue
                 elif not (each_approx < p_center)[0] and (each_approx < p_center)[1]:
-                    p2 = each_approx
+                    p2 = each_approx #右上
                     continue
-
-            # p1 = approx[1] #左上
-            # p2 = approx[0] #右上
-            # p3 = approx[2] #左下
-            # p4 = approx[3] #右下
 
             o_width = np.linalg.norm(p2 - p1)
             o_width=int(np.floor(o_width))
@@ -149,7 +144,6 @@ def main(args=None, tool=None):
             if flag_write:
                 cv2.imwrite(perspective_dst_path, plate)         
             plate = cv2.resize(plate, (design_w_plate * resize_time, design_h_plate *resize_time))
-
             if flag_write:
                 cv2.imwrite(perspective_dst_path, plate)         
                 print('perspective dst:\n{}'.format(perspective_dst_path))
@@ -157,7 +151,6 @@ def main(args=None, tool=None):
             # 牌照切割
             plate_section = Plate()
             plate_dict = {}
-
             output_dir = 'output/plate'
 
             # BRAND
@@ -318,6 +311,13 @@ def main(args=None, tool=None):
                 plate = cv2pil(plate)
                 plate.save('output/converted.png')
 
+                # 识别英文
+                res = tool.image_to_string(
+                    plate,
+                    lang="eng",
+                    builder=pyocr.builders.WordBoxBuilder(tesseract_layout=6))
+
+                # 识别中文
                 res = tool.image_to_string(
                     plate,
                     lang="eng",

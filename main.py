@@ -362,4 +362,4 @@ if __name__ == '__main__':
     else:
         app.config['tool'] = tool
         app.config['write_image'] = args.write_image
-        app.run(host=args.host, port=args.port, debug=args.debug)
+        app.run(host=args.host, port=args.port, debug=args.debug_flask)

@@ -141,3 +141,4 @@ socket_recieved/*
 !output/plate/.gitkeep
 !info/.gitkeep
 !debug/.gitkeep
+received_socket/*

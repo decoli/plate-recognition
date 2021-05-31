@@ -131,6 +131,13 @@ info/*
 output/*
 samples/*
 .vscode/*
-debug
-socket_recieved/
+debug/*
+socket_recieved/*
 .DS_Store
+!samples/.gitkeep
+!received_http/.gitkeep
+!received_socket/.gitkeep
+!output/.gitkeep
+!output/plate/.gitkeep
+!info/.gitkeep
+!debug/.gitkeep

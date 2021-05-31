@@ -313,14 +313,14 @@ def main(args=None, tool=None):
                 plate.save('output/converted.png')
 
                 # 识别英文
-                if each_plate_section in ['TYPE','NUMBER','ENGINE','POWER','GVM','SIZE','DATEy','DATEm','OCCUPANTS','MANUFACTURERn2']:
+                if each_plate_section in ['TYPE','ENGINE','POWER','GVM','SIZE','DATEy','DATEm','OCCUPANTS','MANUFACTURERn2']:
                     res = tool.image_to_string(
                         plate,
                         lang="eng",
                         builder=pyocr.builders.WordBoxBuilder(tesseract_layout=6))
 
                 # 识别中文
-                if each_plate_section in ['BRAND','COUNTRY','MANUFACTURER','MANUFACTURERn1']:
+                if each_plate_section in ['BRAND','COUNTRY','MANUFACTURER','MANUFACTURERn1','NUMBER']:
                     res = tool.image_to_string(
                         plate,
                         lang="chi_sim",
@@ -340,6 +340,7 @@ def main(args=None, tool=None):
                 plate_dict['MANUFACTURER'] = '天津一汽丰田汽车有限公司'
             
             plate_dict['DATEm'] = re.sub('[a-zA-Z]', '', plate_dict['DATEm'])
+            plate_dict['NUMBER'] = re.sub('[a-z]', '', plate_dict['NUMBER'])
 
             if plate_dict['POWER'].endswith('k'):
                 plate_dict['POWER'] = re.sub('k', 'kW', plate_dict['POWER'])

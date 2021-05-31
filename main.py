@@ -53,6 +53,7 @@ def main(args=None, tool=None):
         request.files.get('file').save(path_received_socket)
         ori_img = cv2.imread(path_received_socket)
         flag_write = app.config.get('write_image')
+        tool = app.config.get('tool')
 
     img = cv2.cvtColor(ori_img,cv2.COLOR_BGR2GRAY)
     if flag_write:
@@ -328,7 +329,7 @@ def main(args=None, tool=None):
             # if flag_ok:
             #     break
             if not args:
-                return 
+                return plate_dict
 
 @app.after_request
 def cors(environ):

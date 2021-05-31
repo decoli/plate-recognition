@@ -1,5 +1,6 @@
 import argparse
 import os
+import re
 import socket
 import sys
 
@@ -312,19 +313,34 @@ def main(args=None, tool=None):
                 plate.save('output/converted.png')
 
                 # 识别英文
-                res = tool.image_to_string(
-                    plate,
-                    lang="eng",
-                    builder=pyocr.builders.WordBoxBuilder(tesseract_layout=6))
+                if each_plate_section in ['TYPE','NUMBER','ENGINE','POWER','GVM','SIZE','DATEy','DATEm','OCCUPANTS','MANUFACTURERn2']:
+                    res = tool.image_to_string(
+                        plate,
+                        lang="eng",
+                        builder=pyocr.builders.WordBoxBuilder(tesseract_layout=6))
 
                 # 识别中文
-                res = tool.image_to_string(
-                    plate,
-                    lang="eng",
-                    builder=pyocr.builders.WordBoxBuilder(tesseract_layout=6))
+                if each_plate_section in ['BRAND','COUNTRY','MANUFACTURER','MANUFACTURERn1']:
+                    res = tool.image_to_string(
+                        plate,
+                        lang="chi_sim",
+                        builder=pyocr.builders.WordBoxBuilder(tesseract_layout=6))
 
                 if not len(res) == 0:
                     plate_dict[each_plate_section] = res[0].content
+            
+            # tuning
+            if plate_dict['BRAND'] in '丰田(TOYOTA)':
+                plate_dict['BRAND'] = '丰田(TOYOTA)'
+                
+            if plate_dict['COUNTRY'] in '中华人民共和':
+                plate_dict['COUNTRY'] = '中华人民共和国'
+            
+            if plate_dict['MANUFACTURER'] in '天津一汽':
+                plate_dict['MANUFACTURER'] = '天津一汽丰田汽车有限公司'
+            
+            plate_dict['DATEm'] = re.sub('[a-zA-Z]', '', plate_dict['DATEm'])
+            
             print('----------\nrecognition compleate, result:\n{}'.format(plate_dict))
  
             # 得到识别成功的flag，便退出循环。

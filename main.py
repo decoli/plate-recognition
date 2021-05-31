@@ -47,11 +47,13 @@ def cv2pil(image):
 def main(args=None, tool=None):
     if args:
         ori_img = cv2.imread(args.sample_path)
+        perspective_img = ori_img.copy()
         flag_write = args.write_image
     else: #Flask
         path_received_socket = 'received_socket/temp.png'
         request.files.get('file').save(path_received_socket)
         ori_img = cv2.imread(path_received_socket)
+        perspective_img = ori_img.copy()
         flag_write = app.config.get('write_image')
         tool = app.config.get('tool')
 
@@ -140,7 +142,7 @@ def main(args=None, tool=None):
             dst_cor=np.float32([[0, 0],[o_width, 0],[0, o_height],[o_width, o_height]])    
 
             map_trans = cv2.getPerspectiveTransform(ori_cor, dst_cor)
-            plate = cv2.warpPerspective(img, map_trans,(o_width, o_height))
+            plate = cv2.warpPerspective(perspective_img, map_trans,(o_width, o_height))
             h_plate = plate.shape[0]
             w_plate = plate.shape[1]
             perspective_dst_path = 'output/perspective_dst.png'

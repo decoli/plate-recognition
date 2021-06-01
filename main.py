@@ -363,6 +363,9 @@ def main(args=None, tool=None):
             if plate_dict['SIZE'].endswith('m'):
                 plate_dict['SIZE'] = re.sub('m', 'ml', plate_dict['SIZE'])
 
+            if plate_dict['DATEy'].endswith('¢'):
+                plate_dict['DATEy'] = re.sub('¢', '9', plate_dict['DATEy'])
+
             print('----------\nrecognition compleate, result:\n{}'.format(plate_dict))
  
             # 得到识别成功的flag，便退出循环。

@@ -48,6 +48,9 @@ def cv2pil(image):
 def main(args=None, tool=None):
     if args:
         ori_img = cv2.imread(args.sample_path)
+        ori_img_l = ori_img.shape[0]
+        ori_img_w = ori_img.shape[1]
+
         perspective_img = ori_img.copy()
         flag_write = args.write_image
     else: #Flask
@@ -107,21 +110,30 @@ def main(args=None, tool=None):
             # cv2.warpPerspective
             # 会出现长宽颠倒的现象，需要解决。
             approx= np.squeeze(approx)
-            p_center = np.mean(approx, axis=0)
 
-            for each_approx in list(approx):
-                if (each_approx < p_center)[0] and (each_approx < p_center)[1]:
-                    p1 = each_approx #左上
-                    continue
-                elif not (each_approx < p_center)[0] and not (each_approx < p_center)[1]:
-                    p4 = each_approx #右下
-                    continue
-                elif (each_approx < p_center)[0] and not (each_approx < p_center)[1]:
-                    p3 = each_approx #左下
-                    continue
-                elif not (each_approx < p_center)[0] and (each_approx < p_center)[1]:
-                    p2 = each_approx #右上
-                    continue
+            # 取两个最小x的方法
+            point_1 = approx[0]
+            point_2 = approx[1]
+            point_3 = approx[2]
+            point_4 = approx[3]
+            points = [point_1, point_2, point_3, point_4]
+
+            points = sorted(points, key=lambda x: x[0])
+            points_left = points[0:2]
+            points_right = points[2:4]
+
+            points_left = sorted(points_left, key=lambda x: x[1])
+            points_right = sorted(points_right, key=lambda x: x[1])
+
+            # p1 #左上
+            # p4 #右下
+            # p3 #左下
+            # p2 #右上
+            p1 = points_left[0]
+            p3 = points_left[1]
+
+            p2 = points_right[0]
+            p4 = points_right[1]
 
             o_width = np.linalg.norm(p2 - p1)
             o_width=int(np.floor(o_width))

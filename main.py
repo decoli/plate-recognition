@@ -68,7 +68,7 @@ def main(args=None, tool=None):
 
     # 白色区域变小
     kernel_erode = np.ones((5,5),np.uint8)
-    img = cv2.erode(img,kernel_erode,iterations = 3)
+    img = cv2.erode(img,kernel_erode,iterations = 4)
     if flag_write:
         cv2.imwrite('output/intermediate_image.png', img)
 
@@ -93,7 +93,11 @@ def main(args=None, tool=None):
         if flag_write:
             cv2.imwrite('output/square_detector.png', img)
 
-        if approx.shape[0] == 4:
+        # 确定矩形4个点的可行性
+        condition_1 = cv2.contourArea(approx) > 150000
+        # condition_2 = 
+
+        if approx.shape[0] == 4 and condition_1:
             # cv2.warpPerspective
             # 会出现长宽颠倒的现象，需要解决。
             approx= np.squeeze(approx)

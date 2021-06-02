@@ -132,6 +132,8 @@ output/*
 samples/*
 .vscode/*
 debug/*
+!debug/.gitkeep
+!debug/debug_sample/.gitkeep
 socket_recieved/*
 !samples/.gitkeep
 !received_http/.gitkeep
@@ -139,6 +141,5 @@ socket_recieved/*
 !output/.gitkeep
 !output/plate/.gitkeep
 !info/.gitkeep
-!debug/.gitkeep
 received_socket/*
 !env/.gitkeep

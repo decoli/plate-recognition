@@ -19,4 +19,8 @@ def adjust_plate(plate_dict):
     plate_dict['SIZE'] = re.sub(r'\D', '', plate_dict['SIZE'])
     plate_dict['GVM'] = re.sub(r'\D', '', plate_dict['GVM'])
     
+    plate_dict['MANUFACTURERn1'] = re.sub('_', '', plate_dict['MANUFACTURERn1'])
+    plate_dict['MANUFACTURERn2'] = re.sub(r'\W', '', plate_dict['MANUFACTURERn2'])
+    plate_dict['MANUFACTURERn2'] = re.sub('—', '', plate_dict['MANUFACTURERn2'])
+    
     return plate_dict

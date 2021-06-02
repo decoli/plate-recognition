@@ -1,5 +1,6 @@
 import argparse
 import os
+import pprint
 import re
 import socket
 import sys
@@ -68,7 +69,7 @@ def main(args=None, tool=None):
 
     # 白色区域变小
     kernel_erode = np.ones((5,5),np.uint8)
-    img = cv2.erode(img,kernel_erode,iterations = 7)
+    img = cv2.erode(img,kernel_erode,iterations = 4)
     if flag_write:
         cv2.imwrite('output/intermediate_image.png', img)
 
@@ -162,8 +163,8 @@ def main(args=None, tool=None):
                 plate = cv2.bitwise_not(plate)
                 plate = cv2.cvtColor(plate, cv2.COLOR_BGR2GRAY)
 
-                kernel_dilate = np.ones((2,2),np.uint8)
-                plate = cv2.dilate(plate,kernel_dilate,iterations=1)
+                # kernel_dilate = np.ones((2,2),np.uint8)
+                # plate = cv2.dilate(plate,kernel_dilate,iterations=1)
 
                 plate = cv2pil(plate)
                 plate.save('output/converted.png')
@@ -186,8 +187,9 @@ def main(args=None, tool=None):
                     plate_dict[each_plate_section] = res[0].content
             
             # tuning
+            pprint.pprint('----------before adjusting:\n{}'.format(plate_dict))
             plate_dict = adjust_plate(plate_dict)
-            print('----------\nrecognition compleate, result:\n{}'.format(plate_dict))
+            pprint.pprint('----------recognition compleate, result:\n{}'.format(plate_dict))
  
             # 得到识别成功的flag，便退出循环。
             # if flag_ok:

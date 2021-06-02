@@ -49,7 +49,7 @@ def get_plate_section(plate, flag_write):
     # TYPE_y_up = int(6 / design_h_plate * h_plate + 0.5 - float_range_y)
     # TYPE_y_down = int(10 / design_h_plate * h_plate + 0.5 + float_range_y)
     TYPE_x_left = 110
-    TYPE_x_right = 230
+    TYPE_x_right = 400
     TYPE_y_up = 30
     TYPE_y_down = 70
     plate_section.TYPE = plate[TYPE_y_up: TYPE_y_down, TYPE_x_left: TYPE_x_right]
@@ -62,7 +62,7 @@ def get_plate_section(plate, flag_write):
     # NUMBER_y_up = int(6 / design_h_plate * h_plate + 0.5 - float_range_y)
     # NUMBER_y_down = int(10 / design_h_plate * h_plate + 0.5 + float_range_y)
     NUMBER_x_left = 105
-    NUMBER_x_right = 380
+    NUMBER_x_right = 550
     NUMBER_y_up = 60
     NUMBER_y_down = 100
     plate_section.NUMBER = plate[NUMBER_y_up: NUMBER_y_down, NUMBER_x_left: NUMBER_x_right]
@@ -71,7 +71,7 @@ def get_plate_section(plate, flag_write):
 
     # ENGINE MODEL
     ENGINE_x_left = 100
-    ENGINE_x_right = 170
+    ENGINE_x_right = 200
     ENGINE_y_up = 90
     ENGINE_y_down = 130
     plate_section.ENGINE = plate[ENGINE_y_up: ENGINE_y_down, ENGINE_x_left: ENGINE_x_right]
@@ -79,7 +79,7 @@ def get_plate_section(plate, flag_write):
         cv2.imwrite(os.path.join(output_dir, 'engine.png'), plate_section.ENGINE)
 
     # POWER
-    POWER_x_left = 160
+    POWER_x_left = 120
     POWER_x_right = 250
     POWER_y_up = 120
     POWER_y_down = 160
@@ -107,7 +107,7 @@ def get_plate_section(plate, flag_write):
 
     # DATEy
     DATEy_x_left = 325
-    DATEy_x_right = 405
+    DATEy_x_right = 420
     DATEy_y_up = 120
     DATEy_y_down = 160
     plate_section.DATEy = plate[DATEy_y_up: DATEy_y_down, DATEy_x_left: DATEy_x_right]
@@ -134,7 +134,7 @@ def get_plate_section(plate, flag_write):
 
     # MANUFACTURER
     MANUFACTURER_x_left = 110
-    MANUFACTURER_x_right = 460
+    MANUFACTURER_x_right = 550
     MANUFACTURER_y_up = 210
     MANUFACTURER_y_down = 250
     plate_section.MANUFACTURER = plate[MANUFACTURER_y_up: MANUFACTURER_y_down, MANUFACTURER_x_left: MANUFACTURER_x_right]
@@ -143,7 +143,7 @@ def get_plate_section(plate, flag_write):
 
     # MANUFACTURERn1
     MANUFACTURERn1_x_left = 100
-    MANUFACTURERn1_x_right = 360
+    MANUFACTURERn1_x_right = 460
     MANUFACTURERn1_y_up = 240
     MANUFACTURERn1_y_down = 280
     plate_section.MANUFACTURERn1 = plate[MANUFACTURERn1_y_up: MANUFACTURERn1_y_down, MANUFACTURERn1_x_left: MANUFACTURERn1_x_right]
@@ -152,7 +152,7 @@ def get_plate_section(plate, flag_write):
 
     # MANUFACTURERn2
     MANUFACTURERn2_x_left = 100
-    MANUFACTURERn2_x_right = 320
+    MANUFACTURERn2_x_right = 390
     MANUFACTURERn2_y_up = 270
     MANUFACTURERn2_y_down = 310
     plate_section.MANUFACTURERn2 = plate[MANUFACTURERn2_y_up: MANUFACTURERn2_y_down, MANUFACTURERn2_x_left: MANUFACTURERn2_x_right]

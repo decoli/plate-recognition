@@ -133,7 +133,8 @@ samples/*
 .vscode/*
 debug/*
 !debug/.gitkeep
-!debug/debug_sample/.gitkeep
+!debug/samples/.gitkeep
+!debug/output/.gitkeep
 socket_recieved/*
 !samples/.gitkeep
 !received_http/.gitkeep

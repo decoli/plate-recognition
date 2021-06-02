@@ -157,8 +157,13 @@ def main(args=None, tool=None):
             plate_dict = {}
             # 文字识别模块
             for each_plate_section in plate_section.__dict__.keys():
+                # 二值化
                 ret, plate = cv2.threshold(getattr(plate_section, each_plate_section), 128, 255, cv2.THRESH_BINARY)
                 plate = cv2.bitwise_not(plate)
+                plate = cv2.cvtColor(plate, cv2.COLOR_BGR2GRAY)
+
+                kernel_dilate = np.ones((2,2),np.uint8)
+                plate = cv2.dilate(plate,kernel_dilate,iterations=1)
 
                 plate = cv2pil(plate)
                 plate.save('output/converted.png')
